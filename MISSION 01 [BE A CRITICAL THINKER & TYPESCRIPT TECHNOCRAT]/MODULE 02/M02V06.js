@@ -28,9 +28,10 @@ const postsData = [
 
 const lookUpTable = postsData.reduce((table, post) => {
   table[post.postId] = post;
+  console.log(table);
   return table;
 }, {});
-console.log(postsData);
-console.log("lookUpTable :>> ", lookUpTable);
+// console.log(postsData);
+// console.log("lookUpTable :>> ", lookUpTable);
 
 const post = lookUpTable["1"];
