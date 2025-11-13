@@ -7,8 +7,12 @@
 // console.log(sum(10, 20));
 
 type Role = "user" | "admin";
+type mStatus = boolean;
 
-type User = {
+type UserStatus = Role & mStatus;
+
+
+interface User {
   name: string;
   age: number;
   marriedStatus: boolean;
@@ -22,13 +26,13 @@ type User = {
 //   role: "admin",
 // };
 
-type Administrator = User & Role;
+interface IAdministrator extends User {
+  role: Role;
+}
 
-const administrator1: Administrator = {
-  name: "Sheikh MD Lukman Miah",
+const admin1: IAdministrator = {
+  name: "Sheikh Lukman",
   age: 21,
-  role: "admin",
   marriedStatus: false,
+  role: "admin",
 };
-
-console.log(administrator1);
