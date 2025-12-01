@@ -157,6 +157,28 @@ app.put("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
+app.delete("/users/:id", async (req: Request, res: Response) => {
+  try {
+    const response = await pool.query(
+      `DELETE FROM users WHERE id = $1 RETURNING id`,
+      [req.params.id]
+    );
+    if (response.rows.length === 0) {
+      return res.status(404).json({
+        message: "User not found.",
+      });
+    }
+    return res.status(200).json({
+      message: "Deleted success.",
+      data: response,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message || error,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
