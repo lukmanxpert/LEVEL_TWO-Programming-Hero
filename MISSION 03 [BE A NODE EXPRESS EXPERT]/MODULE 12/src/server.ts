@@ -127,6 +127,36 @@ app.get("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
+app.put("/users/:id", async (req: Request, res: Response) => {
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({
+      message: "Provide require fields.",
+    });
+  }
+  try {
+    const response = await pool.query(
+      `UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING id, name, email`,
+      [name, email, req.params.id]
+    );
+    if (response.rows.length === 0) {
+      return res.status(404).json({
+        message: "User not found.",
+        success: false,
+        error: true,
+      });
+    }
+    return res.status(200).json({
+      message: "User updated.",
+      data: response,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message || error,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
