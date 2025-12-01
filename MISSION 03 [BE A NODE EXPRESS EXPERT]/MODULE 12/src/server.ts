@@ -179,6 +179,14 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
+// not found route handle
+app.use((req: Request, res: Response) => {
+  res.status(400).json({
+    message: "Route not found.",
+    path: req.path,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
