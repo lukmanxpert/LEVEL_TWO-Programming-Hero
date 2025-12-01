@@ -99,6 +99,34 @@ app.get("/users", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/users/:id", async (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+    const response = await pool.query(`SELECT * FROM users WHERE id = $1`, [
+      id,
+    ]);
+    if (!response.rows[0]) {
+      return res.status(200).json({
+        message: "No user found.",
+        error: false,
+        success: true,
+      });
+    }
+    return res.status(200).json({
+      message: "User data fetched success.",
+      error: false,
+      success: true,
+      data: response.rows[0],
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
