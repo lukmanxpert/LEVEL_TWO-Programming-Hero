@@ -48,8 +48,15 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.post("/users", async (req: Request, res: Response) => {
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(401).json({
+      message: "Provide require field.",
+      error: true,
+      success: false,
+    });
+  }
   try {
-    const { name, email } = req.body;
     const result = await pool.query(
       `
       INSERT INTO users(name, email) VALUES($1, $2) RETURNING*
@@ -69,6 +76,25 @@ app.post("/users", async (req: Request, res: Response) => {
       message: error.message || "Data inserted failed.",
       error: true,
       success: false,
+    });
+  }
+});
+
+app.get("/users", async (req: Request, res: Response) => {
+  try {
+    const response = await pool.query(`SELECT * FROM users`);
+    res.status(200).json({
+      message: "Data retrieve successful.",
+      error: false,
+      success: true,
+      data: response.rows,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to get users.",
+      error: true,
+      success: false,
+      errorData: error,
     });
   }
 });
