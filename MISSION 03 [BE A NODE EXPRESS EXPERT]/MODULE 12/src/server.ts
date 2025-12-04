@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import config from "./config";
 import initDB, { pool } from "./config/db";
+import logger from "./middleware/logger";
+import { userRouter } from "./modules/user/user.routes";
 
 const app = express();
 const port = config.port;
@@ -11,41 +13,11 @@ app.use(express.json());
 // initializing database
 initDB();
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello world...");
-});
+// all routes here
+app.use("/users", userRouter);
 
-app.post("/users", async (req: Request, res: Response) => {
-  const { name, email } = req.body;
-  if (!name || !email) {
-    return res.status(401).json({
-      message: "Provide require field.",
-      error: true,
-      success: false,
-    });
-  }
-  try {
-    const result = await pool.query(
-      `
-      INSERT INTO users(name, email) VALUES($1, $2) RETURNING*
-      `,
-      [name, email]
-    );
-    if (result.rows[0]) {
-      return res.status(200).json({
-        message: "Data inserted success.",
-        error: false,
-        success: true,
-        data: result.rows[0],
-      });
-    }
-  } catch (error: any) {
-    return res.status(500).json({
-      message: error.message || "Data inserted failed.",
-      error: true,
-      success: false,
-    });
-  }
+app.get("/", logger, (req: Request, res: Response) => {
+  res.send("Hello world...");
 });
 
 app.get("/users", async (req: Request, res: Response) => {
