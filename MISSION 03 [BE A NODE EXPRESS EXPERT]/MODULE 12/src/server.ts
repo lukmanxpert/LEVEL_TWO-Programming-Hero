@@ -1,9 +1,11 @@
 import express, { Request, Response } from "express";
 import config from "./config";
-import initDB, { pool } from "./config/db";
+import initDB from "./config/db";
 import logger from "./middleware/logger";
 import { userRouter } from "./modules/user/user.routes";
+import { authRouter } from "./modules/auth/auth.routes";
 
+// config here
 const app = express();
 const port = config.port;
 
@@ -15,7 +17,9 @@ initDB();
 
 // all routes here
 app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
+// home path
 app.get("/", logger, (req: Request, res: Response) => {
   res.send("Hello world...");
 });
@@ -28,6 +32,7 @@ app.use((req: Request, res: Response) => {
   });
 });
 
+// app listen here
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
