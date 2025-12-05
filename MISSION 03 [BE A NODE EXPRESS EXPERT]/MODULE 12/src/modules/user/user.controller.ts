@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { userService } from "./user.service";
 
 const createUser = async (req: Request, res: Response) => {
-  const { name, email } = req.body;
-  if (!name || !email) {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
     return res.status(401).json({
       message: "Provide require field.",
       error: true,
@@ -11,7 +11,7 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
   try {
-    const result = await userService.createUser(name, email);
+    const result = await userService.createUser(req.body);
     if (result.rows[0]) {
       return res.status(200).json({
         message: "Data inserted success.",
