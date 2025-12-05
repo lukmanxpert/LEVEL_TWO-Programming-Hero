@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { userControllers } from "./user.controller";
+import auth from "../../middleware/auth";
 
 const router = Router();
 
 router.post("/", userControllers.createUser);
-router.get("/", userControllers.getAllUSers);
+router.get("/", auth(), userControllers.getAllUSers);
 router.get("/:id", userControllers.getSingleUser);
 router.put("/:id", userControllers.updateUser);
 router.delete("/:id", userControllers.deleteUser);
